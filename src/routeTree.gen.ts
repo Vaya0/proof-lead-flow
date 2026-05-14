@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingInvestorRouteImport } from './routes/onboarding/investor'
 import { Route as OnboardingFounderRouteImport } from './routes/onboarding/founder'
 
 const AuthRoute = AuthRouteImport.update({
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingInvestorRoute = OnboardingInvestorRouteImport.update({
+  id: '/onboarding/investor',
+  path: '/onboarding/investor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingFounderRoute = OnboardingFounderRouteImport.update({
   id: '/onboarding/founder',
   path: '/onboarding/founder',
@@ -33,30 +39,39 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
+  '/onboarding/investor': typeof OnboardingInvestorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
+  '/onboarding/investor': typeof OnboardingInvestorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
+  '/onboarding/investor': typeof OnboardingInvestorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/onboarding/founder'
+  fullPaths: '/' | '/auth' | '/onboarding/founder' | '/onboarding/investor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/onboarding/founder'
-  id: '__root__' | '/' | '/auth' | '/onboarding/founder'
+  to: '/' | '/auth' | '/onboarding/founder' | '/onboarding/investor'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/onboarding/founder'
+    | '/onboarding/investor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
+  OnboardingInvestorRoute: typeof OnboardingInvestorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +90,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/investor': {
+      id: '/onboarding/investor'
+      path: '/onboarding/investor'
+      fullPath: '/onboarding/investor'
+      preLoaderRoute: typeof OnboardingInvestorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding/founder': {
       id: '/onboarding/founder'
       path: '/onboarding/founder'
@@ -89,6 +111,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
+  OnboardingInvestorRoute: OnboardingInvestorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
