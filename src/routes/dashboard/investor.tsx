@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { INDUSTRIES, STAGES, stageBadgeClass } from "@/lib/constants";
 import { ArrowRight, Check, TrendingUp, Users, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { StartupLogo } from "@/components/StartupLogo";
 
 export const Route = createFileRoute("/dashboard/investor")({
   component: InvestorDashboard,
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/dashboard/investor")({
 type Startup = {
   id: string; startup_name: string; tagline: string; industry: string; business_model: string;
   stage: string; mrr: number; growth_rate: number; team_size: number;
+  logo_url: string | null;
 };
 
 function InvestorDashboard() {
@@ -122,13 +124,18 @@ function InvestorDashboard() {
           <div className="grid md:grid-cols-2 gap-4">
             {filtered.map((s) => (
               <article key={s.id} className="p-6 rounded-xl bg-card border border-border hover:border-primary/40 transition" style={{ boxShadow: "var(--shadow-card)" }}>
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <Link to="/startup/$id" params={{ id: s.id }} className="font-semibold text-lg hover:text-primary transition">
-                    {s.startup_name}
-                  </Link>
-                  <span className={`px-2 py-0.5 rounded-full text-xs border font-mono ${stageBadgeClass(s.stage)}`}>{s.stage}</span>
+                <div className="flex items-start gap-3 mb-4">
+                  <StartupLogo name={s.startup_name} url={s.logo_url} size="md" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-1">
+                      <Link to="/startup/$id" params={{ id: s.id }} className="font-semibold text-lg hover:text-primary transition truncate">
+                        {s.startup_name}
+                      </Link>
+                      <span className={`px-2 py-0.5 rounded-full text-xs border font-mono shrink-0 ${stageBadgeClass(s.stage)}`}>{s.stage}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{s.tagline}</p>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground mb-5">{s.tagline}</p>
                 <div className="grid grid-cols-3 gap-3 mb-5 pb-5 border-b border-border">
                   <Metric icon={<DollarSign className="w-3 h-3" />} label="MRR" value={`$${s.mrr.toLocaleString()}`} />
                   <Metric icon={<TrendingUp className="w-3 h-3" />} label="Growth" value={`${s.growth_rate}%`} />
