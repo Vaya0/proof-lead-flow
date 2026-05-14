@@ -14,7 +14,188 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      intro_requests: {
+        Row: {
+          created_at: string
+          id: string
+          investor_id: string
+          message: string | null
+          startup_id: string
+          status: Database["public"]["Enums"]["intro_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          investor_id: string
+          message?: string | null
+          startup_id: string
+          status?: Database["public"]["Enums"]["intro_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investor_id?: string
+          message?: string | null
+          startup_id?: string
+          status?: Database["public"]["Enums"]["intro_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intro_requests_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startup_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          fund_name: string
+          id: string
+          linkedin_url: string
+          max_ticket: number
+          min_ticket: number
+          preferred_industries: string[]
+          role_title: string
+          target_stages: string[]
+          thesis: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          fund_name: string
+          id?: string
+          linkedin_url: string
+          max_ticket?: number
+          min_ticket?: number
+          preferred_industries?: string[]
+          role_title: string
+          target_stages?: string[]
+          thesis: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          fund_name?: string
+          id?: string
+          linkedin_url?: string
+          max_ticket?: number
+          min_ticket?: number
+          preferred_industries?: string[]
+          role_title?: string
+          target_stages?: string[]
+          thesis?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
+      startup_profiles: {
+        Row: {
+          business_model: string
+          created_at: string
+          demo_url: string
+          founded_year: number
+          founder_name: string
+          growth_rate: number
+          hq_location: string
+          id: string
+          industry: string
+          linkedin_url: string
+          mrr: number
+          raise_amount: number
+          stage: string
+          startup_name: string
+          tagline: string
+          team_size: number
+          total_users: number
+          traction_description: string
+          updated_at: string
+          use_of_funds: string
+          user_id: string
+        }
+        Insert: {
+          business_model: string
+          created_at?: string
+          demo_url: string
+          founded_year: number
+          founder_name: string
+          growth_rate?: number
+          hq_location: string
+          id?: string
+          industry: string
+          linkedin_url: string
+          mrr?: number
+          raise_amount?: number
+          stage: string
+          startup_name: string
+          tagline: string
+          team_size?: number
+          total_users?: number
+          traction_description: string
+          updated_at?: string
+          use_of_funds: string
+          user_id: string
+        }
+        Update: {
+          business_model?: string
+          created_at?: string
+          demo_url?: string
+          founded_year?: number
+          founder_name?: string
+          growth_rate?: number
+          hq_location?: string
+          id?: string
+          industry?: string
+          linkedin_url?: string
+          mrr?: number
+          raise_amount?: number
+          stage?: string
+          startup_name?: string
+          tagline?: string
+          team_size?: number
+          total_users?: number
+          traction_description?: string
+          updated_at?: string
+          use_of_funds?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +204,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      intro_status: "pending" | "accepted" | "declined"
+      user_role: "founder" | "investor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +332,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      intro_status: ["pending", "accepted", "declined"],
+      user_role: ["founder", "investor"],
+    },
   },
 } as const
