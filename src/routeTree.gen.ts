@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as IntrosRouteImport } from './routes/intros'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +20,16 @@ import { Route as OnboardingFounderRouteImport } from './routes/onboarding/found
 import { Route as DashboardInvestorRouteImport } from './routes/dashboard/investor'
 import { Route as DashboardFounderRouteImport } from './routes/dashboard/founder'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IntrosRoute = IntrosRouteImport.update({
   id: '/intros',
   path: '/intros',
@@ -63,6 +75,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
+  '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -73,6 +87,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
+  '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -84,6 +100,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
+  '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -96,6 +114,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
+    | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -106,6 +126,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
+    | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -116,6 +138,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
+    | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -127,6 +151,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   IntrosRoute: typeof IntrosRoute
+  LearnRoute: typeof LearnRoute
+  ResourcesRoute: typeof ResourcesRoute
   DashboardFounderRoute: typeof DashboardFounderRoute
   DashboardInvestorRoute: typeof DashboardInvestorRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
@@ -136,6 +162,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/intros': {
       id: '/intros'
       path: '/intros'
@@ -199,6 +239,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   IntrosRoute: IntrosRoute,
+  LearnRoute: LearnRoute,
+  ResourcesRoute: ResourcesRoute,
   DashboardFounderRoute: DashboardFounderRoute,
   DashboardInvestorRoute: DashboardInvestorRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
@@ -208,13 +250,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
