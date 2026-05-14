@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Field, inputClass } from "@/components/FormField";
 import { INDUSTRIES, BUSINESS_MODELS, STAGES } from "@/lib/constants";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { LogoUploader } from "@/components/LogoUploader";
 
 export const Route = createFileRoute("/onboarding/founder")({
   component: FounderOnboarding,
@@ -16,6 +17,7 @@ type Form = {
   demo_url: string; mrr: string; growth_rate: string; total_users: string;
   traction_description: string; team_size: string;
   raise_amount: string; use_of_funds: string; founder_name: string; linkedin_url: string;
+  logo_url: string;
 };
 
 const empty: Form = {
@@ -24,6 +26,7 @@ const empty: Form = {
   demo_url: "", mrr: "0", growth_rate: "0", total_users: "0",
   traction_description: "", team_size: "1",
   raise_amount: "0", use_of_funds: "", founder_name: "", linkedin_url: "",
+  logo_url: "",
 };
 
 function FounderOnboarding() {
@@ -31,10 +34,12 @@ function FounderOnboarding() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<Form>(empty);
   const [saving, setSaving] = useState(false);
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) navigate({ to: "/auth" });
+      else setUserId(data.session.user.id);
     });
   }, [navigate]);
 
@@ -64,6 +69,7 @@ function FounderOnboarding() {
         use_of_funds: form.use_of_funds,
         founder_name: form.founder_name,
         linkedin_url: form.linkedin_url,
+        logo_url: form.logo_url || null,
       });
       if (error) throw error;
       toast.success("Profile saved");
@@ -93,6 +99,16 @@ function FounderOnboarding() {
             <div className="space-y-5">
               <h2 className="text-2xl font-bold">Company Basics</h2>
               <p className="text-muted-foreground text-sm">Tell us about your startup.</p>
+              {userId && (
+                <Field label="Company Logo">
+                  <LogoUploader
+                    userId={userId}
+                    name={form.startup_name || "?"}
+                    value={form.logo_url}
+                    onChange={(url) => set("logo_url")(url ?? "")}
+                  />
+                </Field>
+              )}
               <Field label="Startup Name"><input className={inputClass} value={form.startup_name} onChange={(e) => set("startup_name")(e.target.value)} required /></Field>
               <Field label="Tagline" hint="Max 120 characters"><input maxLength={120} className={inputClass} value={form.tagline} onChange={(e) => set("tagline")(e.target.value)} /></Field>
               <div className="grid grid-cols-2 gap-4">
