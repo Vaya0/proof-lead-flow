@@ -136,6 +136,7 @@ export type Database = {
           id: string
           industry: string
           linkedin_url: string
+          logo_url: string | null
           mrr: number
           raise_amount: number
           stage: string
@@ -159,6 +160,7 @@ export type Database = {
           id?: string
           industry: string
           linkedin_url: string
+          logo_url?: string | null
           mrr?: number
           raise_amount?: number
           stage: string
@@ -182,6 +184,7 @@ export type Database = {
           id?: string
           industry?: string
           linkedin_url?: string
+          logo_url?: string | null
           mrr?: number
           raise_amount?: number
           stage?: string
