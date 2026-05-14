@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as IntrosRouteImport } from './routes/intros'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,6 +23,11 @@ import { Route as DashboardFounderRouteImport } from './routes/dashboard/founder
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IntrosRoute = IntrosRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
+  '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
     | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
     | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/intros'
+    | '/learn'
     | '/resources'
     | '/dashboard/founder'
     | '/dashboard/investor'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   IntrosRoute: typeof IntrosRoute
+  LearnRoute: typeof LearnRoute
   ResourcesRoute: typeof ResourcesRoute
   DashboardFounderRoute: typeof DashboardFounderRoute
   DashboardInvestorRoute: typeof DashboardInvestorRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/intros': {
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   IntrosRoute: IntrosRoute,
+  LearnRoute: LearnRoute,
   ResourcesRoute: ResourcesRoute,
   DashboardFounderRoute: DashboardFounderRoute,
   DashboardInvestorRoute: DashboardInvestorRoute,
