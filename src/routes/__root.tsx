@@ -76,10 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "UpStart connects execution-ready startups with thesis-matched investors. No decks. No cold emails. Just signal." },
       { name: "author", content: "UpStart" },
       { property: "og:title", content: "UpStart — Investors want proof. Not ideas." },
-      { property: "og:description", content: "Thesis-matched intros between execution-ready founders and venture investors." },
+      { property: "og:description", content: "UpStart connects execution-ready startups with thesis-matched investors. No decks. No cold emails. Just signal." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "UpStart — Investors want proof. Not ideas." },
+      { name: "twitter:description", content: "UpStart connects execution-ready startups with thesis-matched investors. No decks. No cold emails. Just signal." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7d27e988-2b01-4c44-9b3e-e8a90c95346c/id-preview-d0ec4ad7--5d713269-a662-4c9d-aef3-aaa440c4e472.lovable.app-1778770490099.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7d27e988-2b01-4c44-9b3e-e8a90c95346c/id-preview-d0ec4ad7--5d713269-a662-4c9d-aef3-aaa440c4e472.lovable.app-1778770490099.png" },
     ],
     links: [
       {
