@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { stageBadgeClass } from "@/lib/constants";
 import { TrendingUp, DollarSign, Users, Mail, ExternalLink } from "lucide-react";
+import { LogoUploader } from "@/components/LogoUploader";
+import { StartupLogo } from "@/components/StartupLogo";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/founder")({
   component: FounderDashboard,
@@ -14,12 +17,14 @@ function FounderDashboard() {
   const [startup, setStartup] = useState<any>(null);
   const [intros, setIntros] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     (async () => {
       const { data: sess } = await supabase.auth.getSession();
       if (!sess.session) { navigate({ to: "/auth" }); return; }
       const userId = sess.session.user.id;
+      setUserId(userId);
       const { data: s } = await supabase.from("startup_profiles").select("*").eq("user_id", userId).maybeSingle();
       if (!s) { navigate({ to: "/onboarding/founder" }); return; }
       setStartup(s);
@@ -31,21 +36,37 @@ function FounderDashboard() {
 
   if (loading) return <AppShell role="founder"><div className="p-10 text-muted-foreground">Loading…</div></AppShell>;
 
+  const updateLogo = async (url: string | null) => {
+    const { error } = await supabase.from("startup_profiles").update({ logo_url: url }).eq("id", startup.id);
+    if (error) { toast.error(error.message); return; }
+    setStartup({ ...startup, logo_url: url });
+  };
+
   return (
     <AppShell role="founder">
       <div className="max-w-5xl mx-auto px-8 py-10">
         <div className="mb-8 flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold">{startup.startup_name}</h1>
-              <span className={`px-2 py-0.5 rounded-full text-xs border font-mono ${stageBadgeClass(startup.stage)}`}>{startup.stage}</span>
+          <div className="flex items-start gap-4">
+            <StartupLogo name={startup.startup_name} url={startup.logo_url} size="lg" />
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold">{startup.startup_name}</h1>
+                <span className={`px-2 py-0.5 rounded-full text-xs border font-mono ${stageBadgeClass(startup.stage)}`}>{startup.stage}</span>
+              </div>
+              <p className="text-muted-foreground">{startup.tagline}</p>
             </div>
-            <p className="text-muted-foreground">{startup.tagline}</p>
           </div>
           <a href={startup.demo_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm hover:bg-secondary transition">
             Demo <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
+
+        {userId && (
+          <div className="mb-8 p-5 rounded-xl bg-card border border-border" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">Company Logo</div>
+            <LogoUploader userId={userId} name={startup.startup_name} value={startup.logo_url} onChange={updateLogo} />
+          </div>
+        )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <Stat icon={<DollarSign className="w-4 h-4" />} label="MRR" value={`$${Number(startup.mrr).toLocaleString()}`} />
