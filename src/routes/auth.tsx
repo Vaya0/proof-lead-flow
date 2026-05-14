@@ -5,12 +5,17 @@ import { toast } from "sonner";
 import { Rocket } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    role: s.role === "investor" ? "investor" : s.role === "founder" ? "founder" : undefined,
+  }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"founder" | "investor">("founder");
+  const search = Route.useSearch();
+  const presetRole = search.role as "founder" | "investor" | undefined;
+  const [role, setRole] = useState<"founder" | "investor">(presetRole ?? "founder");
   const [mode, setMode] = useState<"signup" | "login">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -80,23 +85,33 @@ function AuthPage() {
       </header>
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
-          <h1 className="text-3xl font-bold mb-2 text-center">{mode === "signup" ? "Create your account" : "Welcome back"}</h1>
-          <p className="text-muted-foreground text-center mb-8">{mode === "signup" ? "Pick your side. Start with signal." : "Log in to continue."}</p>
+          <h1 className="text-3xl font-bold mb-2 text-center">
+            {mode === "signup"
+              ? presetRole
+                ? `Sign up as ${presetRole === "founder" ? "a Founder" : "an Investor"}`
+                : "Create your account"
+              : "Welcome back"}
+          </h1>
+          <p className="text-muted-foreground text-center mb-8">
+            {mode === "signup" ? "Start with signal." : "Log in to continue."}
+          </p>
 
-          {/* Role tabs */}
-          <div className="grid grid-cols-2 p-1 rounded-lg bg-card border border-border mb-6">
-            {(["founder", "investor"] as const).map((r) => (
-              <button
-                key={r}
-                onClick={() => setRole(r)}
-                className={`px-4 py-2 text-sm font-medium rounded-md capitalize transition ${
-                  role === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
+          {/* Role tabs — only when role wasn't already chosen on the landing page */}
+          {mode === "signup" && !presetRole && (
+            <div className="grid grid-cols-2 p-1 rounded-lg bg-card border border-border mb-6">
+              {(["founder", "investor"] as const).map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRole(r)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md capitalize transition ${
+                    role === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-xl bg-card border border-border" style={{ boxShadow: "var(--shadow-card)" }}>
             {mode === "signup" && (

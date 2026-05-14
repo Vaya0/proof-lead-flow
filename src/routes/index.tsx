@@ -43,10 +43,10 @@ function Landing() {
             UpStart connects execution-ready startups with thesis-matched investors. No decks. No cold emails. Just signal.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/auth" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition glow-primary">
+            <Link to="/auth" search={{ role: "founder" }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition glow-primary">
               Apply as Founder <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link to="/auth" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border bg-card text-foreground font-medium hover:bg-secondary transition">
+            <Link to="/auth" search={{ role: "investor" }} className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border bg-card text-foreground font-medium hover:bg-secondary transition">
               Join as Investor
             </Link>
           </div>
