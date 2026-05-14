@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { stageBadgeClass } from "@/lib/constants";
 import { ArrowLeft, ExternalLink, TrendingUp, DollarSign, Users, Briefcase } from "lucide-react";
+import { StartupLogo } from "@/components/StartupLogo";
 
 export const Route = createFileRoute("/startup/$id")({
   component: StartupDetail,
@@ -35,11 +36,16 @@ function StartupDetail() {
           <div className="text-muted-foreground">Not found.</div>
         ) : (
           <>
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <h1 className="text-3xl font-bold">{startup.startup_name}</h1>
-              <span className={`px-2 py-0.5 rounded-full text-xs border font-mono ${stageBadgeClass(startup.stage)}`}>{startup.stage}</span>
+            <div className="flex items-start gap-4 mb-6">
+              <StartupLogo name={startup.startup_name} url={startup.logo_url} size="lg" />
+              <div className="flex-1">
+                <div className="flex items-start justify-between gap-4 mb-2">
+                  <h1 className="text-3xl font-bold">{startup.startup_name}</h1>
+                  <span className={`px-2 py-0.5 rounded-full text-xs border font-mono ${stageBadgeClass(startup.stage)}`}>{startup.stage}</span>
+                </div>
+                <p className="text-muted-foreground text-lg">{startup.tagline}</p>
+              </div>
             </div>
-            <p className="text-muted-foreground text-lg mb-6">{startup.tagline}</p>
 
             <div className="flex gap-2 mb-8">
               <span className="px-2.5 py-1 rounded-full text-xs bg-secondary border border-border text-muted-foreground">{startup.industry}</span>
