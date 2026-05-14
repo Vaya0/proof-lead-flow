@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingInvestorRouteImport } from './routes/onboarding/investor'
 import { Route as OnboardingFounderRouteImport } from './routes/onboarding/founder'
+import { Route as DashboardInvestorRouteImport } from './routes/dashboard/investor'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -34,16 +35,23 @@ const OnboardingFounderRoute = OnboardingFounderRouteImport.update({
   path: '/onboarding/founder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardInvestorRoute = DashboardInvestorRouteImport.update({
+  id: '/dashboard/investor',
+  path: '/dashboard/investor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
 }
@@ -51,18 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/onboarding/founder' | '/onboarding/investor'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard/investor'
+    | '/onboarding/founder'
+    | '/onboarding/investor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/onboarding/founder' | '/onboarding/investor'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard/investor'
+    | '/onboarding/founder'
+    | '/onboarding/investor'
   id:
     | '__root__'
     | '/'
     | '/auth'
+    | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
   fileRoutesById: FileRoutesById
@@ -70,6 +90,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  DashboardInvestorRoute: typeof DashboardInvestorRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
   OnboardingInvestorRoute: typeof OnboardingInvestorRoute
 }
@@ -104,12 +125,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingFounderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/investor': {
+      id: '/dashboard/investor'
+      path: '/dashboard/investor'
+      fullPath: '/dashboard/investor'
+      preLoaderRoute: typeof DashboardInvestorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  DashboardInvestorRoute: DashboardInvestorRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
   OnboardingInvestorRoute: OnboardingInvestorRoute,
 }
