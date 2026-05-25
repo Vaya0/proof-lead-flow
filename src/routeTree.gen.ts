@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ListsRouteImport } from './routes/lists'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as IntrosRouteImport } from './routes/intros'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -29,6 +30,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsRoute = ListsRouteImport.update({
+  id: '/lists',
+  path: '/lists',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
     | '/settings'
     | '/dashboard/founder'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
     | '/settings'
     | '/dashboard/founder'
@@ -150,6 +161,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
     | '/settings'
     | '/dashboard/founder'
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   IntrosRoute: typeof IntrosRoute
   LearnRoute: typeof LearnRoute
+  ListsRoute: typeof ListsRoute
   ResourcesRoute: typeof ResourcesRoute
   SettingsRoute: typeof SettingsRoute
   DashboardFounderRoute: typeof DashboardFounderRoute
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists': {
+      id: '/lists'
+      path: '/lists'
+      fullPath: '/lists'
+      preLoaderRoute: typeof ListsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -260,6 +280,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   IntrosRoute: IntrosRoute,
   LearnRoute: LearnRoute,
+  ListsRoute: ListsRoute,
   ResourcesRoute: ResourcesRoute,
   SettingsRoute: SettingsRoute,
   DashboardFounderRoute: DashboardFounderRoute,
