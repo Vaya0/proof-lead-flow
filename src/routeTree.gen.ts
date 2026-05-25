@@ -9,7 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ListsRouteImport } from './routes/lists'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as IntrosRouteImport } from './routes/intros'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -19,10 +21,21 @@ import { Route as OnboardingInvestorRouteImport } from './routes/onboarding/inve
 import { Route as OnboardingFounderRouteImport } from './routes/onboarding/founder'
 import { Route as DashboardInvestorRouteImport } from './routes/dashboard/investor'
 import { Route as DashboardFounderRouteImport } from './routes/dashboard/founder'
+import { Route as DashboardFounderAnalyticsRouteImport } from './routes/dashboard/founder.analytics'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsRoute = ListsRouteImport.update({
+  id: '/lists',
+  path: '/lists',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -70,30 +83,42 @@ const DashboardFounderRoute = DashboardFounderRouteImport.update({
   path: '/dashboard/founder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardFounderAnalyticsRoute =
+  DashboardFounderAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => DashboardFounderRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
-  '/dashboard/founder': typeof DashboardFounderRoute
+  '/settings': typeof SettingsRoute
+  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
+  '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
-  '/dashboard/founder': typeof DashboardFounderRoute
+  '/settings': typeof SettingsRoute
+  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
+  '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,12 +126,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
+  '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
-  '/dashboard/founder': typeof DashboardFounderRoute
+  '/settings': typeof SettingsRoute
+  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
+  '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -115,36 +143,45 @@ export interface FileRouteTypes {
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
+    | '/dashboard/founder/analytics'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
+    | '/dashboard/founder/analytics'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/intros'
     | '/learn'
+    | '/lists'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
+    | '/dashboard/founder/analytics'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,8 +189,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   IntrosRoute: typeof IntrosRoute
   LearnRoute: typeof LearnRoute
+  ListsRoute: typeof ListsRoute
   ResourcesRoute: typeof ResourcesRoute
-  DashboardFounderRoute: typeof DashboardFounderRoute
+  SettingsRoute: typeof SettingsRoute
+  DashboardFounderRoute: typeof DashboardFounderRouteWithChildren
   DashboardInvestorRoute: typeof DashboardInvestorRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
   OnboardingInvestorRoute: typeof OnboardingInvestorRoute
@@ -162,11 +201,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists': {
+      id: '/lists'
+      path: '/lists'
+      fullPath: '/lists'
+      preLoaderRoute: typeof ListsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -232,16 +285,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardFounderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/founder/analytics': {
+      id: '/dashboard/founder/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/founder/analytics'
+      preLoaderRoute: typeof DashboardFounderAnalyticsRouteImport
+      parentRoute: typeof DashboardFounderRoute
+    }
   }
 }
+
+interface DashboardFounderRouteChildren {
+  DashboardFounderAnalyticsRoute: typeof DashboardFounderAnalyticsRoute
+}
+
+const DashboardFounderRouteChildren: DashboardFounderRouteChildren = {
+  DashboardFounderAnalyticsRoute: DashboardFounderAnalyticsRoute,
+}
+
+const DashboardFounderRouteWithChildren =
+  DashboardFounderRoute._addFileChildren(DashboardFounderRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   IntrosRoute: IntrosRoute,
   LearnRoute: LearnRoute,
+  ListsRoute: ListsRoute,
   ResourcesRoute: ResourcesRoute,
-  DashboardFounderRoute: DashboardFounderRoute,
+  SettingsRoute: SettingsRoute,
+  DashboardFounderRoute: DashboardFounderRouteWithChildren,
   DashboardInvestorRoute: DashboardInvestorRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
   OnboardingInvestorRoute: OnboardingInvestorRoute,
@@ -250,13 +323,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

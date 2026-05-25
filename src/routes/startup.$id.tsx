@@ -23,6 +23,19 @@ function StartupDetail() {
       const { data } = await supabase.from("startup_profiles").select("*").eq("id", id).maybeSingle();
       setStartup(data);
       setLoading(false);
+      // Track investor profile view (deduped per session via unique constraint).
+      if (data && data.user_id !== sess.session.user.id) {
+        let sessionKey = sessionStorage.getItem("upstart-view-session");
+        if (!sessionKey) {
+          sessionKey = crypto.randomUUID();
+          sessionStorage.setItem("upstart-view-session", sessionKey);
+        }
+        await (supabase as any).from("startup_profile_views").insert({
+          startup_id: data.id,
+          investor_id: sess.session.user.id,
+          session_key: sessionKey,
+        });
+      }
     })();
   }, [id, navigate]);
 
