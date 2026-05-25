@@ -52,6 +52,59 @@ export type Database = {
           },
         ]
       }
+      investor_list_items: {
+        Row: {
+          added_at: string
+          id: string
+          list_id: string
+          startup_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          list_id: string
+          startup_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          list_id?: string
+          startup_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_list_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "investor_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_lists: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          investor_id: string
+          name: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          investor_id: string
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          investor_id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           created_at: string
@@ -124,8 +177,141 @@ export type Database = {
         }
         Relationships: []
       }
+      startup_existing_investors: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          is_lead: boolean
+          name: string
+          round: string | null
+          startup_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          is_lead?: boolean
+          name: string
+          round?: string | null
+          startup_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          is_lead?: boolean
+          name?: string
+          round?: string | null
+          startup_id?: string
+        }
+        Relationships: []
+      }
+      startup_fund_allocations: {
+        Row: {
+          category: Database["public"]["Enums"]["allocation_category"]
+          id: string
+          percentage: number
+          startup_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["allocation_category"]
+          id?: string
+          percentage?: number
+          startup_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["allocation_category"]
+          id?: string
+          percentage?: number
+          startup_id?: string
+        }
+        Relationships: []
+      }
+      startup_labels: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          investor_id: string
+          label: string
+          startup_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          investor_id: string
+          label: string
+          startup_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          investor_id?: string
+          label?: string
+          startup_id?: string
+        }
+        Relationships: []
+      }
+      startup_media: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          sort_order: number
+          startup_id: string
+          title: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          sort_order?: number
+          startup_id: string
+          title?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          sort_order?: number
+          startup_id?: string
+          title?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      startup_profile_views: {
+        Row: {
+          id: string
+          investor_id: string
+          session_key: string
+          startup_id: string
+          viewed_at: string
+        }
+        Insert: {
+          id?: string
+          investor_id: string
+          session_key: string
+          startup_id: string
+          viewed_at?: string
+        }
+        Update: {
+          id?: string
+          investor_id?: string
+          session_key?: string
+          startup_id?: string
+          viewed_at?: string
+        }
+        Relationships: []
+      }
       startup_profiles: {
         Row: {
+          annual_revenue: number
           business_model: string
           created_at: string
           demo_url: string
@@ -133,12 +319,17 @@ export type Database = {
           founder_name: string
           growth_rate: number
           hq_location: string
+          hq_region: string | null
           id: string
           industry: string
+          intro_video_url: string | null
           linkedin_url: string
           logo_url: string | null
+          monthly_burn: number
           mrr: number
           raise_amount: number
+          revenue_verified: boolean
+          runway_months: number
           stage: string
           startup_name: string
           tagline: string
@@ -150,6 +341,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          annual_revenue?: number
           business_model: string
           created_at?: string
           demo_url: string
@@ -157,12 +349,17 @@ export type Database = {
           founder_name: string
           growth_rate?: number
           hq_location: string
+          hq_region?: string | null
           id?: string
           industry: string
+          intro_video_url?: string | null
           linkedin_url: string
           logo_url?: string | null
+          monthly_burn?: number
           mrr?: number
           raise_amount?: number
+          revenue_verified?: boolean
+          runway_months?: number
           stage: string
           startup_name: string
           tagline: string
@@ -174,6 +371,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          annual_revenue?: number
           business_model?: string
           created_at?: string
           demo_url?: string
@@ -181,12 +379,17 @@ export type Database = {
           founder_name?: string
           growth_rate?: number
           hq_location?: string
+          hq_region?: string | null
           id?: string
           industry?: string
+          intro_video_url?: string | null
           linkedin_url?: string
           logo_url?: string | null
+          monthly_burn?: number
           mrr?: number
           raise_amount?: number
+          revenue_verified?: boolean
+          runway_months?: number
           stage?: string
           startup_name?: string
           tagline?: string
@@ -199,6 +402,84 @@ export type Database = {
         }
         Relationships: []
       }
+      startup_revenue_proofs: {
+        Row: {
+          created_at: string
+          file_url: string
+          id: string
+          label: string | null
+          startup_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_url: string
+          id?: string
+          label?: string | null
+          startup_id: string
+        }
+        Update: {
+          created_at?: string
+          file_url?: string
+          id?: string
+          label?: string | null
+          startup_id?: string
+        }
+        Relationships: []
+      }
+      startup_team_members: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          linkedin_url: string | null
+          name: string
+          photo_url: string | null
+          sort_order: number
+          startup_id: string
+          title: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          linkedin_url?: string | null
+          name: string
+          photo_url?: string | null
+          sort_order?: number
+          startup_id: string
+          title: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          linkedin_url?: string | null
+          name?: string
+          photo_url?: string | null
+          sort_order?: number
+          startup_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          theme: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          theme?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          theme?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -207,7 +488,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      allocation_category:
+        | "Product Development"
+        | "Hiring"
+        | "Marketing"
+        | "Operations"
+        | "Other"
       intro_status: "pending" | "accepted" | "declined"
+      media_kind: "image" | "pdf" | "video"
       user_role: "founder" | "investor"
     }
     CompositeTypes: {
@@ -336,7 +624,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      allocation_category: [
+        "Product Development",
+        "Hiring",
+        "Marketing",
+        "Operations",
+        "Other",
+      ],
       intro_status: ["pending", "accepted", "declined"],
+      media_kind: ["image", "pdf", "video"],
       user_role: ["founder", "investor"],
     },
   },
