@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as IntrosRouteImport } from './routes/intros'
@@ -20,6 +21,11 @@ import { Route as OnboardingFounderRouteImport } from './routes/onboarding/found
 import { Route as DashboardInvestorRouteImport } from './routes/dashboard/investor'
 import { Route as DashboardFounderRouteImport } from './routes/dashboard/founder'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/intros': typeof IntrosRoute
   '/learn': typeof LearnRoute
   '/resources': typeof ResourcesRoute
+  '/settings': typeof SettingsRoute
   '/dashboard/founder': typeof DashboardFounderRoute
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/intros'
     | '/learn'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/intros'
     | '/learn'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/intros'
     | '/learn'
     | '/resources'
+    | '/settings'
     | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   IntrosRoute: typeof IntrosRoute
   LearnRoute: typeof LearnRoute
   ResourcesRoute: typeof ResourcesRoute
+  SettingsRoute: typeof SettingsRoute
   DashboardFounderRoute: typeof DashboardFounderRoute
   DashboardInvestorRoute: typeof DashboardInvestorRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
@@ -162,6 +175,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   IntrosRoute: IntrosRoute,
   LearnRoute: LearnRoute,
   ResourcesRoute: ResourcesRoute,
+  SettingsRoute: SettingsRoute,
   DashboardFounderRoute: DashboardFounderRoute,
   DashboardInvestorRoute: DashboardInvestorRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
@@ -250,3 +271,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
