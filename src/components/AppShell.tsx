@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Rocket, LogOut, LayoutDashboard, Search, Mail, FileText, GraduationCap, ListChecks, BarChart3, Settings } from "lucide-react";
+import { Rocket, LogOut, LayoutDashboard, Search, Mail, FileText, GraduationCap, ListChecks, BarChart3, Settings, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ReactNode } from "react";
 
@@ -10,6 +10,7 @@ export function AppShell({ role, children }: { role: "founder" | "investor"; chi
   const items = role === "investor"
     ? [
         { to: "/dashboard/investor", label: "Browse Startups", icon: Search },
+        { to: "/favorites", label: "Favourites", icon: Star },
         { to: "/lists", label: "My Lists", icon: ListChecks },
         { to: "/intros", label: "My Intros", icon: Mail },
         { to: "/settings", label: "Settings", icon: Settings },

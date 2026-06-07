@@ -3,9 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { INDUSTRIES, STAGES, stageBadgeClass } from "@/lib/constants";
-import { ArrowRight, Check, TrendingUp, Users, DollarSign } from "lucide-react";
+import { ArrowRight, Check, TrendingUp, Users, DollarSign, Star } from "lucide-react";
 import { toast } from "sonner";
 import { StartupLogo } from "@/components/StartupLogo";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/dashboard/investor")({
   component: InvestorDashboard,
@@ -21,6 +24,9 @@ function InvestorDashboard() {
   const navigate = useNavigate();
   const [startups, setStartups] = useState<Startup[]>([]);
   const [requested, setRequested] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [confirmTarget, setConfirmTarget] = useState<Startup | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [industryFilter, setIndustryFilter] = useState<string[]>([]);
   const [stageFilter, setStageFilter] = useState<string[]>([]);
   const [sort, setSort] = useState<"mrr-desc" | "mrr-asc" | "growth-desc" | "newest">("growth-desc");
@@ -35,12 +41,14 @@ function InvestorDashboard() {
       const { data: prof } = await supabase.from("investor_profiles").select("preferred_industries,target_stages").eq("user_id", userId).maybeSingle();
       if (!prof) { navigate({ to: "/onboarding/investor" }); return; }
 
-      const [{ data: s }, { data: intros }] = await Promise.all([
+      const [{ data: s }, { data: intros }, { data: favs }] = await Promise.all([
         supabase.from("startup_profiles").select("*").order("created_at", { ascending: false }),
         supabase.from("intro_requests").select("startup_id").eq("investor_id", userId),
+        (supabase as any).from("investor_favorites").select("startup_id").eq("investor_id", userId),
       ]);
       setStartups((s ?? []) as Startup[]);
       setRequested(new Set((intros ?? []).map((i: any) => i.startup_id)));
+      setFavorites(new Set((favs ?? []).map((f: any) => f.startup_id)));
       setIndustryFilter(prof.preferred_industries ?? []);
       setStageFilter(prof.target_stages ?? []);
       setLoading(false);
@@ -62,15 +70,38 @@ function InvestorDashboard() {
     return out;
   }, [startups, industryFilter, stageFilter, sort]);
 
-  const requestIntro = async (startupId: string) => {
+  const confirmIntro = async () => {
+    if (!confirmTarget) return;
+    setSubmitting(true);
+    const { data: sess } = await supabase.auth.getSession();
+    if (!sess.session) { setSubmitting(false); return; }
+    const { error } = await supabase.from("intro_requests").insert({
+      investor_id: sess.session.user.id, startup_id: confirmTarget.id,
+    });
+    setSubmitting(false);
+    if (error) { toast.error(error.message); return; }
+    setRequested((s) => new Set(s).add(confirmTarget.id));
+    toast.success("Intro requested");
+    setConfirmTarget(null);
+  };
+
+  const toggleFavorite = async (startupId: string) => {
     const { data: sess } = await supabase.auth.getSession();
     if (!sess.session) return;
-    const { error } = await supabase.from("intro_requests").insert({
-      investor_id: sess.session.user.id, startup_id: startupId,
-    });
-    if (error) { toast.error(error.message); return; }
-    setRequested((s) => new Set(s).add(startupId));
-    toast.success("Intro requested");
+    const isFav = favorites.has(startupId);
+    if (isFav) {
+      const { error } = await (supabase as any)
+        .from("investor_favorites").delete()
+        .eq("investor_id", sess.session.user.id).eq("startup_id", startupId);
+      if (error) { toast.error(error.message); return; }
+      setFavorites((s) => { const n = new Set(s); n.delete(startupId); return n; });
+    } else {
+      const { error } = await (supabase as any)
+        .from("investor_favorites").insert({ investor_id: sess.session.user.id, startup_id: startupId });
+      if (error) { toast.error(error.message); return; }
+      setFavorites((s) => new Set(s).add(startupId));
+      toast.success("Added to favourites");
+    }
   };
 
   const togglePill = (val: string, list: string[], set: (v: string[]) => void) => {
@@ -146,21 +177,57 @@ function InvestorDashboard() {
                     <span className="px-2 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{s.industry}</span>
                     <span className="px-2 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{s.business_model}</span>
                   </div>
-                  {requested.has(s.id) ? (
-                    <span className="inline-flex items-center gap-1.5 text-sm text-emerald-400 px-3 py-1.5">
-                      <Check className="w-3.5 h-3.5" /> Requested
-                    </span>
-                  ) : (
-                    <button onClick={() => requestIntro(s.id)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition">
-                      Request Intro <ArrowRight className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleFavorite(s.id)}
+                      aria-label={favorites.has(s.id) ? "Remove from favourites" : "Add to favourites"}
+                      className={`p-1.5 rounded-lg border transition ${favorites.has(s.id) ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground"}`}
+                    >
+                      <Star className={`w-4 h-4 ${favorites.has(s.id) ? "fill-current" : ""}`} />
                     </button>
-                  )}
+                    {requested.has(s.id) ? (
+                      <span className="inline-flex items-center gap-1.5 text-sm text-emerald-400 px-3 py-1.5">
+                        <Check className="w-3.5 h-3.5" /> Requested
+                      </span>
+                    ) : (
+                      <button onClick={() => setConfirmTarget(s)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition">
+                        Request Intro <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
           </div>
         )}
       </div>
+
+      <Dialog open={!!confirmTarget} onOpenChange={(o) => !o && setConfirmTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Request an intro?</DialogTitle>
+            <DialogDescription>
+              Do you want to request an intro for <span className="text-foreground font-medium">{confirmTarget?.startup_name}</span>?
+              The founder will be notified and can accept or decline.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <button
+              onClick={() => setConfirmTarget(null)}
+              className="px-4 py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmIntro}
+              disabled={submitting}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition disabled:opacity-50"
+            >
+              {submitting ? "Sending…" : <>Yes, request intro <ArrowRight className="w-3.5 h-3.5" /></>}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }

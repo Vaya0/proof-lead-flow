@@ -52,6 +52,27 @@ export type Database = {
           },
         ]
       }
+      investor_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          investor_id: string
+          startup_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          investor_id: string
+          startup_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          investor_id?: string
+          startup_id?: string
+        }
+        Relationships: []
+      }
       investor_list_items: {
         Row: {
           added_at: string

@@ -2,7 +2,9 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Rocket } from "lucide-react";
+import { Rocket, FlaskConical } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { ensureTestUser } from "@/lib/test-users.functions";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -21,6 +23,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [testLoading, setTestLoading] = useState<"founder" | "investor" | null>(null);
+  const provisionTestUser = useServerFn(ensureTestUser);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -37,6 +41,23 @@ function AuthPage() {
       navigate({ to: hasStartup ? "/dashboard/founder" : "/onboarding/founder" });
     } else {
       navigate({ to: hasInvestor ? "/dashboard/investor" : "/onboarding/investor" });
+    }
+  };
+
+  const signInAsTestUser = async (r: "founder" | "investor") => {
+    setTestLoading(r);
+    try {
+      const creds = await provisionTestUser({ data: { role: r } });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: creds.email, password: creds.password,
+      });
+      if (error) throw error;
+      toast.success(`Signed in as test ${r}`);
+      await routeAfterAuth(data.user.id);
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to sign in as test user");
+    } finally {
+      setTestLoading(null);
     }
   };
 
@@ -136,6 +157,33 @@ function AuthPage() {
               {mode === "signup" ? "Already have an account? Log in" : "New here? Create an account"}
             </button>
           </form>
+
+          <div className="mt-6 p-4 rounded-xl border border-dashed border-border bg-card/50">
+            <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground mb-2">
+              <FlaskConical className="w-3.5 h-3.5" /> Test accounts
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Skip signup and explore the full app end‑to‑end with a pre‑seeded account.
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => signInAsTestUser("founder")}
+                disabled={testLoading !== null}
+                className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-secondary transition disabled:opacity-50"
+              >
+                {testLoading === "founder" ? "Loading…" : "Sign in as Founder"}
+              </button>
+              <button
+                type="button"
+                onClick={() => signInAsTestUser("investor")}
+                disabled={testLoading !== null}
+                className="px-3 py-2 rounded-lg border border-border text-sm hover:bg-secondary transition disabled:opacity-50"
+              >
+                {testLoading === "investor" ? "Loading…" : "Sign in as Investor"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

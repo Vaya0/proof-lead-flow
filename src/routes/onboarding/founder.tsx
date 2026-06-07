@@ -109,15 +109,15 @@ function FounderOnboarding() {
                   />
                 </Field>
               )}
-              <Field label="Startup Name"><input className={inputClass} value={form.startup_name} onChange={(e) => set("startup_name")(e.target.value)} required /></Field>
-              <Field label="Tagline" hint="Max 120 characters"><input maxLength={120} className={inputClass} value={form.tagline} onChange={(e) => set("tagline")(e.target.value)} /></Field>
+              <Field label="Startup Name" tooltip="The official, public name of your company. This is how investors will find you."><input className={inputClass} value={form.startup_name} onChange={(e) => set("startup_name")(e.target.value)} required /></Field>
+              <Field label="Tagline" hint="Max 120 characters" tooltip="One sentence that explains what you do. Think of it as the headline of your pitch."><input maxLength={120} className={inputClass} value={form.tagline} onChange={(e) => set("tagline")(e.target.value)} /></Field>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Industry"><select className={inputClass} value={form.industry} onChange={(e) => set("industry")(e.target.value)}>{INDUSTRIES.map(i => <option key={i}>{i}</option>)}</select></Field>
-                <Field label="Business Model"><select className={inputClass} value={form.business_model} onChange={(e) => set("business_model")(e.target.value)}>{BUSINESS_MODELS.map(i => <option key={i}>{i}</option>)}</select></Field>
-                <Field label="Stage"><select className={inputClass} value={form.stage} onChange={(e) => set("stage")(e.target.value)}>{STAGES.map(i => <option key={i}>{i}</option>)}</select></Field>
-                <Field label="Founded Year"><input type="number" className={inputClass} value={form.founded_year} onChange={(e) => set("founded_year")(e.target.value)} /></Field>
+                <Field label="Industry" tooltip="The primary sector you operate in. Used to match you with investors who focus on this space."><select className={inputClass} value={form.industry} onChange={(e) => set("industry")(e.target.value)}>{INDUSTRIES.map(i => <option key={i}>{i}</option>)}</select></Field>
+                <Field label="Business Model" tooltip="Who pays you and how. e.g. B2B (you sell to other businesses), B2C (consumers), Marketplace, etc."><select className={inputClass} value={form.business_model} onChange={(e) => set("business_model")(e.target.value)}>{BUSINESS_MODELS.map(i => <option key={i}>{i}</option>)}</select></Field>
+                <Field label="Stage" tooltip="Your fundraising stage. Pre-seed = idea/early, Seed = first real round, Series A = scaling proven traction."><select className={inputClass} value={form.stage} onChange={(e) => set("stage")(e.target.value)}>{STAGES.map(i => <option key={i}>{i}</option>)}</select></Field>
+                <Field label="Founded Year" tooltip="The year your company was legally formed or work began."><input type="number" className={inputClass} value={form.founded_year} onChange={(e) => set("founded_year")(e.target.value)} /></Field>
               </div>
-              <Field label="HQ Location"><input className={inputClass} value={form.hq_location} onChange={(e) => set("hq_location")(e.target.value)} placeholder="San Francisco, CA" /></Field>
+              <Field label="HQ Location" tooltip="The city and country where your team is primarily based. Remote? Use the founder's location."><input className={inputClass} value={form.hq_location} onChange={(e) => set("hq_location")(e.target.value)} placeholder="San Francisco, CA" /></Field>
             </div>
           )}
 
@@ -125,14 +125,14 @@ function FounderOnboarding() {
             <div className="space-y-5">
               <h2 className="text-2xl font-bold">Proof of Work</h2>
               <p className="text-muted-foreground text-sm">Show real traction. Numbers over narrative.</p>
-              <Field label="Demo / Product URL"><input type="url" className={inputClass} value={form.demo_url} onChange={(e) => set("demo_url")(e.target.value)} placeholder="https://" /></Field>
+              <Field label="Demo / Product URL" tooltip="A live link investors can click to try your product, or a short demo video URL."><input type="url" className={inputClass} value={form.demo_url} onChange={(e) => set("demo_url")(e.target.value)} placeholder="https://" /></Field>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="MRR (USD)"><input type="number" className={`${inputClass} font-mono`} value={form.mrr} onChange={(e) => set("mrr")(e.target.value)} /></Field>
-                <Field label="MoM Growth (%)"><input type="number" className={`${inputClass} font-mono`} value={form.growth_rate} onChange={(e) => set("growth_rate")(e.target.value)} /></Field>
-                <Field label="Total Users"><input type="number" className={`${inputClass} font-mono`} value={form.total_users} onChange={(e) => set("total_users")(e.target.value)} /></Field>
-                <Field label="Team Size"><input type="number" className={`${inputClass} font-mono`} value={form.team_size} onChange={(e) => set("team_size")(e.target.value)} /></Field>
+                <Field label="MRR (USD)" tooltip="Monthly Recurring Revenue — the predictable revenue you collect every month from active customers."><input type="number" className={`${inputClass} font-mono`} value={form.mrr} onChange={(e) => set("mrr")(e.target.value)} /></Field>
+                <Field label="MoM Growth (%)" tooltip="Month-over-Month growth in revenue or users. (This month − last month) ÷ last month × 100."><input type="number" className={`${inputClass} font-mono`} value={form.growth_rate} onChange={(e) => set("growth_rate")(e.target.value)} /></Field>
+                <Field label="Total Users" tooltip="The total number of registered users or active customers on your product today."><input type="number" className={`${inputClass} font-mono`} value={form.total_users} onChange={(e) => set("total_users")(e.target.value)} /></Field>
+                <Field label="Team Size" tooltip="Full-time equivalent people working on the company, including founders."><input type="number" className={`${inputClass} font-mono`} value={form.team_size} onChange={(e) => set("team_size")(e.target.value)} /></Field>
               </div>
-              <Field label="Traction Description" hint="Max 300 characters"><textarea maxLength={300} rows={3} className={inputClass} value={form.traction_description} onChange={(e) => set("traction_description")(e.target.value)} /></Field>
+              <Field label="Traction Description" hint="Max 300 characters" tooltip="A short paragraph with concrete proof of progress: customers, contracts, growth, partnerships, or pilots."><textarea maxLength={300} rows={3} className={inputClass} value={form.traction_description} onChange={(e) => set("traction_description")(e.target.value)} /></Field>
             </div>
           )}
 
@@ -140,10 +140,10 @@ function FounderOnboarding() {
             <div className="space-y-5">
               <h2 className="text-2xl font-bold">Fundraising Ask</h2>
               <p className="text-muted-foreground text-sm">What you need and how you'll deploy it.</p>
-              <Field label="Raise Amount (USD)"><input type="number" className={`${inputClass} font-mono`} value={form.raise_amount} onChange={(e) => set("raise_amount")(e.target.value)} /></Field>
-              <Field label="Use of Funds" hint="Max 200 characters"><textarea maxLength={200} rows={3} className={inputClass} value={form.use_of_funds} onChange={(e) => set("use_of_funds")(e.target.value)} /></Field>
-              <Field label="Founder Name"><input className={inputClass} value={form.founder_name} onChange={(e) => set("founder_name")(e.target.value)} /></Field>
-              <Field label="LinkedIn URL"><input type="url" className={inputClass} value={form.linkedin_url} onChange={(e) => set("linkedin_url")(e.target.value)} placeholder="https://linkedin.com/in/..." /></Field>
+              <Field label="Raise Amount (USD)" tooltip="How much capital you are raising in this round, in US dollars."><input type="number" className={`${inputClass} font-mono`} value={form.raise_amount} onChange={(e) => set("raise_amount")(e.target.value)} /></Field>
+              <Field label="Use of Funds" hint="Max 200 characters" tooltip="High-level breakdown of how you'll spend the money: hiring, product, GTM, runway, etc."><textarea maxLength={200} rows={3} className={inputClass} value={form.use_of_funds} onChange={(e) => set("use_of_funds")(e.target.value)} /></Field>
+              <Field label="Founder Name" tooltip="Primary founder / CEO full name. Shown to investors on your profile."><input className={inputClass} value={form.founder_name} onChange={(e) => set("founder_name")(e.target.value)} /></Field>
+              <Field label="LinkedIn URL" tooltip="Public LinkedIn profile of the primary founder. Helps investors verify the team."><input type="url" className={inputClass} value={form.linkedin_url} onChange={(e) => set("linkedin_url")(e.target.value)} placeholder="https://linkedin.com/in/..." /></Field>
             </div>
           )}
 
