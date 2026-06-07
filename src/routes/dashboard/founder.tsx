@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { stageBadgeClass } from "@/lib/constants";
-import { ExternalLink, BarChart3, Pencil, Image as ImageIcon } from "lucide-react";
+import { ExternalLink, BarChart3, Image as ImageIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { LogoUploader } from "@/components/LogoUploader";
 import { StartupLogo } from "@/components/StartupLogo";
