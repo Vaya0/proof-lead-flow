@@ -6,6 +6,9 @@ import { stageBadgeClass } from "@/lib/constants";
 import { TrendingUp, DollarSign, Users, Mail, ExternalLink } from "lucide-react";
 import { LogoUploader } from "@/components/LogoUploader";
 import { StartupLogo } from "@/components/StartupLogo";
+import { MediaSection } from "@/components/founder/MediaSection";
+import { TeamSection } from "@/components/founder/TeamSection";
+import { ExistingInvestorsSection } from "@/components/founder/ExistingInvestorsSection";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/founder")({
@@ -65,6 +68,19 @@ function FounderDashboard() {
           <div className="mb-8 p-5 rounded-xl bg-card border border-border" style={{ boxShadow: "var(--shadow-card)" }}>
             <div className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">Company Logo</div>
             <LogoUploader userId={userId} name={startup.startup_name} value={startup.logo_url} onChange={updateLogo} />
+          </div>
+        )}
+
+        {userId && (
+          <div className="grid grid-cols-1 gap-6 mb-10">
+            <MediaSection
+              startupId={startup.id}
+              userId={userId}
+              introVideoUrl={startup.intro_video_url ?? null}
+              onIntroVideo={(url) => setStartup({ ...startup, intro_video_url: url })}
+            />
+            <TeamSection startupId={startup.id} userId={userId} />
+            <ExistingInvestorsSection startupId={startup.id} />
           </div>
         )}
 
