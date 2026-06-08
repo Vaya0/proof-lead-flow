@@ -91,9 +91,9 @@ const DashboardFounderIndexRoute = DashboardFounderIndexRouteImport.update({
 } as any)
 const DashboardFounderAnalyticsRoute =
   DashboardFounderAnalyticsRouteImport.update({
-    id: '/analytics',
-    path: '/analytics',
-    getParentRoute: () => DashboardFounderRoute,
+    id: '/dashboard/founder/analytics',
+    path: '/dashboard/founder/analytics',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -209,6 +209,7 @@ export interface RootRouteChildren {
   OnboardingFounderRoute: typeof OnboardingFounderRoute
   OnboardingInvestorRoute: typeof OnboardingInvestorRoute
   StartupIdRoute: typeof StartupIdRoute
+  DashboardFounderAnalyticsRoute: typeof DashboardFounderAnalyticsRoute
   DashboardFounderIndexRoute: typeof DashboardFounderIndexRoute
 }
 
@@ -307,10 +308,10 @@ declare module '@tanstack/react-router' {
     }
     '/dashboard/founder/analytics': {
       id: '/dashboard/founder/analytics'
-      path: '/analytics'
+      path: '/dashboard/founder/analytics'
       fullPath: '/dashboard/founder/analytics'
       preLoaderRoute: typeof DashboardFounderAnalyticsRouteImport
-      parentRoute: typeof DashboardFounderRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -328,18 +329,9 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingFounderRoute: OnboardingFounderRoute,
   OnboardingInvestorRoute: OnboardingInvestorRoute,
   StartupIdRoute: StartupIdRoute,
+  DashboardFounderAnalyticsRoute: DashboardFounderAnalyticsRoute,
   DashboardFounderIndexRoute: DashboardFounderIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
