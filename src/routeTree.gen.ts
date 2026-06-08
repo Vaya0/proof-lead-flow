@@ -21,7 +21,7 @@ import { Route as StartupIdRouteImport } from './routes/startup.$id'
 import { Route as OnboardingInvestorRouteImport } from './routes/onboarding/investor'
 import { Route as OnboardingFounderRouteImport } from './routes/onboarding/founder'
 import { Route as DashboardInvestorRouteImport } from './routes/dashboard/investor'
-import { Route as DashboardFounderRouteImport } from './routes/dashboard/founder'
+import { Route as DashboardFounderIndexRouteImport } from './routes/dashboard/founder.index'
 import { Route as DashboardFounderAnalyticsRouteImport } from './routes/dashboard/founder.analytics'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -84,16 +84,16 @@ const DashboardInvestorRoute = DashboardInvestorRouteImport.update({
   path: '/dashboard/investor',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardFounderRoute = DashboardFounderRouteImport.update({
-  id: '/dashboard/founder',
-  path: '/dashboard/founder',
+const DashboardFounderIndexRoute = DashboardFounderIndexRouteImport.update({
+  id: '/dashboard/founder/',
+  path: '/dashboard/founder/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardFounderAnalyticsRoute =
   DashboardFounderAnalyticsRouteImport.update({
-    id: '/analytics',
-    path: '/analytics',
-    getParentRoute: () => DashboardFounderRoute,
+    id: '/dashboard/founder/analytics',
+    path: '/dashboard/founder/analytics',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -105,12 +105,12 @@ export interface FileRoutesByFullPath {
   '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
-  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
   '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
+  '/dashboard/founder/': typeof DashboardFounderIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -121,12 +121,12 @@ export interface FileRoutesByTo {
   '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
-  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
   '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
+  '/dashboard/founder': typeof DashboardFounderIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,12 +138,12 @@ export interface FileRoutesById {
   '/lists': typeof ListsRoute
   '/resources': typeof ResourcesRoute
   '/settings': typeof SettingsRoute
-  '/dashboard/founder': typeof DashboardFounderRouteWithChildren
   '/dashboard/investor': typeof DashboardInvestorRoute
   '/onboarding/founder': typeof OnboardingFounderRoute
   '/onboarding/investor': typeof OnboardingInvestorRoute
   '/startup/$id': typeof StartupIdRoute
   '/dashboard/founder/analytics': typeof DashboardFounderAnalyticsRoute
+  '/dashboard/founder/': typeof DashboardFounderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,12 +156,12 @@ export interface FileRouteTypes {
     | '/lists'
     | '/resources'
     | '/settings'
-    | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
     | '/dashboard/founder/analytics'
+    | '/dashboard/founder/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,12 +172,12 @@ export interface FileRouteTypes {
     | '/lists'
     | '/resources'
     | '/settings'
-    | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
     | '/dashboard/founder/analytics'
+    | '/dashboard/founder'
   id:
     | '__root__'
     | '/'
@@ -188,12 +188,12 @@ export interface FileRouteTypes {
     | '/lists'
     | '/resources'
     | '/settings'
-    | '/dashboard/founder'
     | '/dashboard/investor'
     | '/onboarding/founder'
     | '/onboarding/investor'
     | '/startup/$id'
     | '/dashboard/founder/analytics'
+    | '/dashboard/founder/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,11 +205,12 @@ export interface RootRouteChildren {
   ListsRoute: typeof ListsRoute
   ResourcesRoute: typeof ResourcesRoute
   SettingsRoute: typeof SettingsRoute
-  DashboardFounderRoute: typeof DashboardFounderRouteWithChildren
   DashboardInvestorRoute: typeof DashboardInvestorRoute
   OnboardingFounderRoute: typeof OnboardingFounderRoute
   OnboardingInvestorRoute: typeof OnboardingInvestorRoute
   StartupIdRoute: typeof StartupIdRoute
+  DashboardFounderAnalyticsRoute: typeof DashboardFounderAnalyticsRoute
+  DashboardFounderIndexRoute: typeof DashboardFounderIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -298,33 +299,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardInvestorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/founder': {
-      id: '/dashboard/founder'
+    '/dashboard/founder/': {
+      id: '/dashboard/founder/'
       path: '/dashboard/founder'
-      fullPath: '/dashboard/founder'
-      preLoaderRoute: typeof DashboardFounderRouteImport
+      fullPath: '/dashboard/founder/'
+      preLoaderRoute: typeof DashboardFounderIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/founder/analytics': {
       id: '/dashboard/founder/analytics'
-      path: '/analytics'
+      path: '/dashboard/founder/analytics'
       fullPath: '/dashboard/founder/analytics'
       preLoaderRoute: typeof DashboardFounderAnalyticsRouteImport
-      parentRoute: typeof DashboardFounderRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface DashboardFounderRouteChildren {
-  DashboardFounderAnalyticsRoute: typeof DashboardFounderAnalyticsRoute
-}
-
-const DashboardFounderRouteChildren: DashboardFounderRouteChildren = {
-  DashboardFounderAnalyticsRoute: DashboardFounderAnalyticsRoute,
-}
-
-const DashboardFounderRouteWithChildren =
-  DashboardFounderRoute._addFileChildren(DashboardFounderRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -335,11 +325,12 @@ const rootRouteChildren: RootRouteChildren = {
   ListsRoute: ListsRoute,
   ResourcesRoute: ResourcesRoute,
   SettingsRoute: SettingsRoute,
-  DashboardFounderRoute: DashboardFounderRouteWithChildren,
   DashboardInvestorRoute: DashboardInvestorRoute,
   OnboardingFounderRoute: OnboardingFounderRoute,
   OnboardingInvestorRoute: OnboardingInvestorRoute,
   StartupIdRoute: StartupIdRoute,
+  DashboardFounderAnalyticsRoute: DashboardFounderAnalyticsRoute,
+  DashboardFounderIndexRoute: DashboardFounderIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

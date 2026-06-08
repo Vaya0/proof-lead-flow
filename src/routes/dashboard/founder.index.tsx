@@ -12,7 +12,7 @@ import { TeamSection } from "@/components/founder/TeamSection";
 import { ExistingInvestorsSection } from "@/components/founder/ExistingInvestorsSection";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/dashboard/founder")({
+export const Route = createFileRoute("/dashboard/founder/")({
   component: FounderDashboard,
 });
 
