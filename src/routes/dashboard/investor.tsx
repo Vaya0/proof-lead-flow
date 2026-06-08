@@ -6,6 +6,7 @@ import { INDUSTRIES, STAGES, stageBadgeClass } from "@/lib/constants";
 import { ArrowRight, Check, TrendingUp, Users, DollarSign, Star } from "lucide-react";
 import { toast } from "sonner";
 import { StartupLogo } from "@/components/StartupLogo";
+import { StartupActionsMenu } from "@/components/StartupActionsMenu";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
@@ -22,6 +23,7 @@ type Startup = {
 
 function InvestorDashboard() {
   const navigate = useNavigate();
+  const [investorId, setInvestorId] = useState<string>("");
   const [startups, setStartups] = useState<Startup[]>([]);
   const [requested, setRequested] = useState<Set<string>>(new Set());
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -37,6 +39,7 @@ function InvestorDashboard() {
       const { data: sess } = await supabase.auth.getSession();
       if (!sess.session) { navigate({ to: "/auth" }); return; }
       const userId = sess.session.user.id;
+      setInvestorId(userId);
 
       const { data: prof } = await supabase.from("investor_profiles").select("preferred_industries,target_stages").eq("user_id", userId).maybeSingle();
       if (!prof) { navigate({ to: "/onboarding/investor" }); return; }
@@ -178,6 +181,9 @@ function InvestorDashboard() {
                     <span className="px-2 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{s.business_model}</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    {investorId && (
+                      <StartupActionsMenu startupId={s.id} investorId={investorId} />
+                    )}
                     <button
                       onClick={() => toggleFavorite(s.id)}
                       aria-label={favorites.has(s.id) ? "Remove from favourites" : "Add to favourites"}
