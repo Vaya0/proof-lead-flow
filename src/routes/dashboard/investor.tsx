@@ -175,32 +175,26 @@ function InvestorDashboard() {
                   <Metric icon={<TrendingUp className="w-3 h-3" />} label="Growth" value={`${s.growth_rate}%`} />
                   <Metric icon={<Users className="w-3 h-3" />} label="Team" value={String(s.team_size)} />
                 </div>
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex gap-1.5">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{s.industry}</span>
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{s.business_model}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {investorId && (
-                      <StartupActionsMenu startupId={s.id} investorId={investorId} />
-                    )}
-                    <button
-                      onClick={() => toggleFavorite(s.id)}
-                      aria-label={favorites.has(s.id) ? "Remove from favourites" : "Add to favourites"}
-                      className={`p-1.5 rounded-lg border transition ${favorites.has(s.id) ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground"}`}
-                    >
-                      <Star className={`w-4 h-4 ${favorites.has(s.id) ? "fill-current" : ""}`} />
+                <div className="flex items-center justify-end gap-2">
+                  {investorId && (
+                    <StartupActionsMenu startupId={s.id} investorId={investorId} />
+                  )}
+                  <button
+                    onClick={() => toggleFavorite(s.id)}
+                    aria-label={favorites.has(s.id) ? "Remove from favourites" : "Add to favourites"}
+                    className={`p-1.5 rounded-lg border transition ${favorites.has(s.id) ? "bg-primary/10 border-primary/40 text-primary" : "border-border text-muted-foreground hover:text-foreground"}`}
+                  >
+                    <Star className={`w-4 h-4 ${favorites.has(s.id) ? "fill-current" : ""}`} />
+                  </button>
+                  {requested.has(s.id) ? (
+                    <span className="inline-flex items-center gap-1.5 text-sm text-emerald-400 px-3 py-1.5">
+                      <Check className="w-3.5 h-3.5" /> Requested
+                    </span>
+                  ) : (
+                    <button onClick={() => setConfirmTarget(s)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition">
+                      Request Intro <ArrowRight className="w-3.5 h-3.5" />
                     </button>
-                    {requested.has(s.id) ? (
-                      <span className="inline-flex items-center gap-1.5 text-sm text-emerald-400 px-3 py-1.5">
-                        <Check className="w-3.5 h-3.5" /> Requested
-                      </span>
-                    ) : (
-                      <button onClick={() => setConfirmTarget(s)} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition">
-                        Request Intro <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               </article>
             ))}
