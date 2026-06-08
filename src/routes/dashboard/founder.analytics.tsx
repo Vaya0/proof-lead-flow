@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
-import { BarChart3, Eye, Users, Mail, CheckCircle2, Percent } from "lucide-react";
+import { BarChart3, Eye, Users, Mail, CheckCircle2, Percent, DollarSign, TrendingUp, Flame, Clock, Users2, Target } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard/founder/analytics")({
@@ -16,6 +16,7 @@ function AnalyticsPage() {
   const [viewSeries, setViewSeries] = useState<any[]>([]);
   const [introSeries, setIntroSeries] = useState<any[]>([]);
   const [activity, setActivity] = useState<any[]>([]);
+  const [startup, setStartup] = useState<any>(null);
 
   useEffect(() => {
     (async () => {
@@ -23,6 +24,8 @@ function AnalyticsPage() {
       if (!sess.session) { navigate({ to: "/auth" }); return; }
       const { data: startup } = await supabase.from("startup_profiles").select("id,startup_name").eq("user_id", sess.session.user.id).maybeSingle();
       if (!startup) { navigate({ to: "/onboarding/founder" }); return; }
+      const { data: full } = await supabase.from("startup_profiles").select("*").eq("id", startup.id).maybeSingle();
+      setStartup(full);
 
       const [{ data: views }, { data: intros }] = await Promise.all([
         (supabase as any).from("startup_profile_views").select("*").eq("startup_id", startup.id).order("viewed_at", { ascending: false }),
@@ -64,15 +67,37 @@ function AnalyticsPage() {
   }, [navigate]);
 
   const conversion = stats.views > 0 ? Math.round((stats.intros / stats.views) * 100) : 0;
+  const fmtMoney = (v: any) => v == null ? "—" : `$${Number(v).toLocaleString()}`;
+  const fmtNum = (v: any) => v == null ? "—" : Number(v).toLocaleString();
+  const fmtPct = (v: any) => v == null ? "—" : `${Number(v)}%`;
 
   return (
     <AppShell role="founder">
       <div className="max-w-6xl mx-auto px-8 py-10">
         <h1 className="text-3xl font-bold flex items-center gap-2 mb-2"><BarChart3 className="w-7 h-7" /> Analytics</h1>
-        <p className="text-muted-foreground mb-8">How investors are engaging with your startup.</p>
+        <p className="text-muted-foreground mb-8">Your startup's traction metrics and how investors are engaging with your profile.</p>
 
         {loading ? <div className="text-muted-foreground">Loading…</div> : (
           <>
+            <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3">Traction metrics</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <Kpi icon={<DollarSign className="w-4 h-4" />} label="MRR" value={fmtMoney(startup?.mrr)} accent />
+              <Kpi icon={<DollarSign className="w-4 h-4" />} label="Annual Revenue" value={fmtMoney(startup?.annual_revenue)} />
+              <Kpi icon={<TrendingUp className="w-4 h-4" />} label="Growth Rate" value={fmtPct(startup?.growth_rate)} />
+              <Kpi icon={<Users2 className="w-4 h-4" />} label="Total Users" value={fmtNum(startup?.total_users)} />
+              <Kpi icon={<Flame className="w-4 h-4" />} label="Monthly Burn" value={fmtMoney(startup?.monthly_burn)} />
+              <Kpi icon={<Clock className="w-4 h-4" />} label="Runway" value={startup?.runway_months ? `${startup.runway_months} mo` : "—"} />
+              <Kpi icon={<Users className="w-4 h-4" />} label="Team Size" value={fmtNum(startup?.team_size)} />
+              <Kpi icon={<Target className="w-4 h-4" />} label="Raising" value={fmtMoney(startup?.raise_amount)} />
+            </div>
+            {startup?.traction_description && (
+              <div className="mb-8 p-4 rounded-xl bg-card border border-border text-sm" style={{ boxShadow: "var(--shadow-card)" }}>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono mb-1">Traction narrative</div>
+                {startup.traction_description}
+              </div>
+            )}
+
+            <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3 mt-8">Investor engagement</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
               <Kpi icon={<Eye className="w-4 h-4" />} label="Profile Views" value={stats.views} />
               <Kpi icon={<Users className="w-4 h-4" />} label="Unique Investors" value={stats.unique} />
