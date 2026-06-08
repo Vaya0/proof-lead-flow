@@ -19,9 +19,6 @@ function Landing() {
           </Link>
           <nav className="flex items-center gap-3">
             <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition">Log in</Link>
-            <Link to="/auth" className="text-sm font-medium px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition">
-              Get started
-            </Link>
           </nav>
         </div>
       </header>
@@ -33,7 +30,7 @@ function Landing() {
         <div className="relative max-w-[1200px] mx-auto px-6 py-32 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs text-muted-foreground mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            Now accepting Q1 2025 cohort
+            Now accepting Q1 2026 cohort
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
             Investors want proof.<br />
@@ -97,7 +94,7 @@ function Landing() {
         <div className="flex items-center gap-6">
           <a className="hover:text-foreground transition" href="#">Privacy</a>
           <a className="hover:text-foreground transition" href="#">Terms</a>
-          <span>© 2025 UpStart</span>
+          <span>© 2026 UpStart</span>
         </div>
       </footer>
     </div>
