@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
-import { BarChart3, Eye, Users, Mail, CheckCircle2, Percent, DollarSign, TrendingUp, Flame, Clock, Users2, Target } from "lucide-react";
+import { BarChart3, Eye, Users, Mail, CheckCircle2, DollarSign, TrendingUp, Flame, Clock, Users2, Target } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard/founder/analytics")({
@@ -66,7 +66,7 @@ function AnalyticsPage() {
     })();
   }, [navigate]);
 
-  const conversion = stats.views > 0 ? Math.round((stats.intros / stats.views) * 100) : 0;
+  
   const fmtMoney = (v: any) => v == null ? "—" : `$${Number(v).toLocaleString()}`;
   const fmtNum = (v: any) => v == null ? "—" : Number(v).toLocaleString();
   const fmtPct = (v: any) => v == null ? "—" : `${Number(v)}%`;
@@ -98,12 +98,11 @@ function AnalyticsPage() {
             )}
 
             <h2 className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-3 mt-8">Investor engagement</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
               <Kpi icon={<Eye className="w-4 h-4" />} label="Profile Views" value={stats.views} />
               <Kpi icon={<Users className="w-4 h-4" />} label="Unique Investors" value={stats.unique} />
               <Kpi icon={<Mail className="w-4 h-4" />} label="Intro Requests" value={stats.intros} />
               <Kpi icon={<CheckCircle2 className="w-4 h-4" />} label="Accepted" value={stats.accepted} />
-              <Kpi icon={<Percent className="w-4 h-4" />} label="Conversion" value={`${conversion}%`} accent />
             </div>
 
             <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -137,10 +136,12 @@ function AnalyticsPage() {
 }
 
 function Kpi({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: any; accent?: boolean }) {
+  const str = String(value ?? "");
+  const sizeClass = str.length > 14 ? "text-sm" : str.length > 10 ? "text-base" : str.length > 7 ? "text-lg" : "text-2xl";
   return (
-    <div className={`p-4 rounded-xl bg-card border ${accent ? "border-primary/40" : "border-border"}`} style={{ boxShadow: "var(--shadow-card)" }}>
+    <div className={`p-4 rounded-xl bg-card border ${accent ? "border-primary/40" : "border-border"} min-w-0`} style={{ boxShadow: "var(--shadow-card)" }}>
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground font-mono mb-2">{icon}{label}</div>
-      <div className={`font-mono font-semibold text-2xl ${accent ? "text-primary" : ""}`}>{value}</div>
+      <div className={`font-mono font-semibold ${sizeClass} ${accent ? "text-primary" : ""} truncate`} title={str}>{value}</div>
     </div>
   );
 }
